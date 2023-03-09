@@ -10,7 +10,7 @@ class AboutAuthorView(TemplateView):
         }
         return context
 
-    
+
 class AboutTechView(TemplateView):
     template_name = 'about/tech.html'
 
