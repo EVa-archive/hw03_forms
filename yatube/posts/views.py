@@ -103,7 +103,7 @@ def post_edit(request, post_id):
         form = PostForm(request.POST or None, instance=post)
         if form.is_valid():
             post = form.save()
-            return redirect('posts:post_detail', post.author)
+            return redirect('posts:profile', post.author)
         form = PostForm(instance=post)
         return render(request, teamplate, context)
-    return redirect('posts:post_edit')
+    return redirect('posts:post_id/edit')
