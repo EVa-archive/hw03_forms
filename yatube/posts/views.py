@@ -73,7 +73,7 @@ def post_detail(request, post_id):
 
 @login_required
 def post_create(request):
-    teamplate = 'posts/create_post.html'
+    template = 'posts/create_post.html'
     form = PostForm(request.POST or None)
     context = {
         'form': form,
@@ -85,12 +85,12 @@ def post_create(request):
             post.author = request.user
             post.save()
             return redirect('posts:profile', post.author)
-    return render(request, teamplate, context)
+    return render(request, template, context)
 
 
 @login_required
 def post_edit(request, post_id):
-    teamplate = 'posts/create_post.html'
+    template = 'posts/create_post.html'
     post = get_object_or_404(Post, pk=post_id)
     form = PostForm(request.POST or None, instance=post)
     context = {
@@ -103,7 +103,7 @@ def post_edit(request, post_id):
         form = PostForm(request.POST or None, instance=post)
         if form.is_valid():
             post = form.save()
-            return redirect('posts/post_deatil.html', post_id)
+            return redirect('posts:post_detail', post_id)
         form = PostForm(instance=post)
-        return render(request, teamplate, context)
-    return redirect('posts/post_deatil.html', post_id)
+        return render(request, template, context)
+    return redirect('posts:post_detail', post_id)
