@@ -66,7 +66,7 @@ class PostUrlTest(TestCase):
             with self.subTest(address=address):
                 response = self.authorized_client.get(address)
                 self.assertTemplateUsed(response, template)
-    
+
     def test_unixisting_page_dont_exists(self):
         """Страница /unexisting_page/ не существует."""
         user_client = [
