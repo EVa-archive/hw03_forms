@@ -1,7 +1,6 @@
 from http import HTTPStatus
 from django import forms
 from django.test import TestCase, Client
-from django.test.client import RequestFactory
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
@@ -26,7 +25,6 @@ class ViewsTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.factory = RequestFactory()
         cls.user = User.objects.create_user(
             username='NoName',
             email='noname@mail.com',
@@ -47,7 +45,6 @@ class ViewsTests(TestCase):
         self.authorized_client = Client()
         self.authorized_client.force_login(ViewsTests.user)
 
-    # Проверяем используемые шаблоны
     def test_pages_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон."""
         templates_pages_names = {
@@ -88,11 +85,6 @@ class ViewsTests(TestCase):
         """Пост при создании не добавляется в другую группу"""
         posts_count = Post.objects.filter(group=self.group).count()
         group_count = Post.objects.filter(group=self.group).count()
-        response_profile = self.authorized_client.get(
-            reverse('posts:profile',
-                    kwargs={'username': f'{self.user.username}'}))
-        profile = response_profile.context['page_obj']
-        print(posts_count, group_count, self.post, profile)
         self.assertEqual(group_count, posts_count, 'поста нет в другой группе')
 
     def test_group_posts_show_correct_context(self):
@@ -148,7 +140,7 @@ class PaginatorViewsTest(TestCase):
             slug='test_group',
             description='Тестовое описание',
         )
-        bilk_post: list = []
+        bilk_post = []
         for i in range(TEST_OF_POST):
             bilk_post.append(Post(text=f'Тестовый текст {i}',
                                   group=self.group,
@@ -165,9 +157,9 @@ class PaginatorViewsTest(TestCase):
         for value in urls:
             response = self.guest_client.get(value)
             count_posts = len(response.context['page_obj'])
-            error_name = (f'Ошибка: {count_posts} постов,'
-                          f' должно {NUMB_FIRST_PAGE}')
-            self.assertEqual(count_posts, NUMB_FIRST_PAGE, error_name)
+            error = (f'Ошибка: {count_posts} постов,'
+                     f' должно {NUMB_FIRST_PAGE}')
+            self.assertEqual(count_posts, NUMB_FIRST_PAGE, error)
 
     def test_correct_page_context_guest_client(self):
         '''Проверка количества постов на первой и второй страницах.'''
@@ -179,6 +171,6 @@ class PaginatorViewsTest(TestCase):
         for value in urls:
             response = self.guest_client.get(value + '?page=2')
             count_posts = len(response.context['page_obj'])
-            error_name = (f'Ошибка: {count_posts} постов,'
-                          f'должно {NUMB_SECOND_PAGE}')
-            self.assertEqual(count_posts, NUMB_SECOND_PAGE, error_name)
+            error = (f'Ошибка: {count_posts} постов,'
+                     f'должно {NUMB_SECOND_PAGE}')
+            self.assertEqual(count_posts, NUMB_SECOND_PAGE, error)
